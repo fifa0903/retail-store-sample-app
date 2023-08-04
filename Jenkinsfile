@@ -31,7 +31,7 @@ pipeline{
         stage('docker compose down'){
             steps{
                 sshagent([cred]){
-                    sh """ssh -o StrictHostKeyChecking=no ${server} << EOF
+                    sh """ssh -t ${server} << EOF
 		    cd ${directory1}
 		    docker compose down -tt
                     exit
@@ -42,7 +42,7 @@ pipeline{
         stage('pull repository'){
             steps{
                 sshagent([cred]){
-                    sh """ssh -o StrictHostKeyChecking=no ${server} << EOF
+                    sh """ssh -t ${server} << EOF
                     cd ${directory2}
                     git pull ${remote} ${branch}
                     exit
