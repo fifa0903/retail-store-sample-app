@@ -31,7 +31,7 @@ pipeline{
         stage('docker compose down'){
             steps{
                 sshagent([cred]){
-                    sh """ssh -o StrictHostKeyChecking=no -tt ${server} << EOF
+                    sh """ssh -T ${server} 'ls -l' << EOF
 		    cd ${directory1}
 		    docker compose down -tt
                     exit
