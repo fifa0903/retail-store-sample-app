@@ -33,7 +33,7 @@ pipeline{
                 sshagent([cred]){
                     sh """ssh -o StrictHostKeyChecking=no ${server} << EOF
 		    cd ${directory1}
-		    docker compose down
+		    docker compose down --tty
                     exit
                     EOF"""
                     }
