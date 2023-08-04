@@ -42,7 +42,7 @@ pipeline{
         stage('pull repository'){
             steps{
                 sshagent([cred]){
-                    sh """ssh -t ${server} << EOF
+                    sh """ssh -o StrictHostKeyChecking=no ${server}<< EOF
                     cd ${directory2}
                     git pull ${remote} ${branch}
                     exit
@@ -68,6 +68,7 @@ pipeline{
                 sshagent([cred]){
                     sh """ssh -o StrictHostKeyChecking=no ${server} << EOF
                     cd ${directory1}
+		    docker login
 		    docker tag ${image11} ${image1}
                     docker push ${image1}
                     docker tag ${image12} ${image2}
