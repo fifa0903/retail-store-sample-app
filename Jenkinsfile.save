@@ -1,0 +1,65 @@
+def branch = "main"
+def remote = "origin"
+def directory1 = "~/retail-store-sample-app/dist/docker-compose"
+def directory2 = "~/retail-store-sample-app"
+def server = "nobody1305@34.124.165.216"
+def cred = "heehe"
+def image1 = "nobody1305/redis:6-alpine"
+def image2 = "nobody1305/mariadb:10.9"
+def image3 = "nobody1305/rabbitmq:3-management"
+def image4 = "nobody1305/public.ecr.aws/aws-containers/retail-store-sample-assets:0.4.0"
+def image5 = "nobody1305/public.ecr.aws/aws-containers/retail-store-sample-checkout:0.4.0"
+"nobody1305/public.ecr.aws/aws-containers/retail-store-sample-checkout:0.4.0"
+
+pipeline{
+    agent any
+    stages{
+        stage('docker compose down'){
+            steps{
+                sshagent([cred]){
+                    sh """ssh -o StrictHostKeyChecking=no ${server} << EOF
+		    cd ${directory1}
+		    docker compose down
+                    exit
+                    EOF"""
+                    }
+                }
+            }
+        stage('pull repository'){
+            steps{
+                sshagent([cred]){
+                    sh """ssh -o StrictHostKeyChecking=no ${server} << EOF
+                    cd ${directory2}
+                    git pull ${remote} ${branch}
+                    exit
+                    EOF"""
+                    }
+                }
+            }
+
+        stage('docker compose up'){
+            steps{
+                sshagent([cred]){
+                    sh """ssh -o StrictHostKeyChecking=no ${server} << EOF
+                    cd ${directory1}
+                    docker compose up -d
+                    exit
+                    EOF"""
+                    }
+                }
+            }
+	
+	 stage('docker push'){
+            steps{
+                sshagent([cred]){
+                    sh """ssh -o StrictHostKeyChecking=no ${server} << EOF
+                    cd ${directory}
+		    docker tag faizal-frontend:latest ${image}
+                    docker push ${image}
+                    exit
+                    EOF"""
+                    }
+                }
+            }
+        }
+    }
