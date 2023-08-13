@@ -89,7 +89,6 @@ pipeline{
                     docker push ${image9}
                     docker tag ${image20} ${image10}
                     docker push ${image10}
-
                     exit
                     EOF"""
                     }
